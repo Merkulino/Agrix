@@ -1,25 +1,28 @@
 package com.betrybe.agrix.ebytr.staff.entity;
 
-
 import com.betrybe.agrix.ebytr.staff.security.Role;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 /**
  * Class representing a person.
  */
 @Entity
-public class Person {
+public class Person implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true)
+  // @Column(unique = true)
   private String username;
 
   private String password;
@@ -27,6 +30,22 @@ public class Person {
   private Role role;
 
   public Person() {
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param id2
+   * 
+   * @param username2
+   * 
+   * @param role
+   * 
+   */
+  public Person(Long id2, String username2, Role role) {
+    this.id = id2;
+    this.username = username2;
+    this.role = role;
   }
 
   public Long getId() {
@@ -73,6 +92,31 @@ public class Person {
     return Objects.equals(id, person.id) && Objects.equals(username,
         person.username) && Objects.equals(password, person.password)
         && Objects.equals(role, person.role);
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of();
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
   }
 }
 
