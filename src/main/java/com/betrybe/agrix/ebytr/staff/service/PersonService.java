@@ -1,5 +1,6 @@
 package com.betrybe.agrix.ebytr.staff.service;
 
+import com.betrybe.agrix.ebytr.staff.dto.AuthRequest;
 import com.betrybe.agrix.ebytr.staff.dto.PersonDto;
 import com.betrybe.agrix.ebytr.staff.entity.Person;
 import com.betrybe.agrix.ebytr.staff.exception.PersonNotFoundException;
@@ -18,11 +19,15 @@ import org.springframework.stereotype.Service;
 public class PersonService implements UserDetailsService {
 
   private final PersonRepository personRepository;
+  
+  private final JwtService jwtService;
 
   @Autowired
   public PersonService(
-      PersonRepository personRepository) {
+      PersonRepository personRepository,
+      JwtService jwtService) {
     this.personRepository = personRepository;
+    this.jwtService = jwtService;
   }
 
   /**
@@ -64,5 +69,21 @@ public class PersonService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return personRepository.findByUsername(username);
+  }
+
+  /**
+   * login user.
+   *
+   * @return jwt token
+   */
+  public String login(Person person) {
+    UserDetails user = this.loadUserByUsername(person.getUsername());
+    if (user == null) {
+      throw new PersonNotFoundException();
+    }
+    if (!user.getPassword().equals(person.getPassword())) {
+      return "Senha incorreta!!"; // Deveria estourar um erro
+    }
+    return jwtService.generateToken(user);
   }
 }
