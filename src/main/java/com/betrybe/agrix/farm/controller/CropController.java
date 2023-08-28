@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -73,12 +75,16 @@ public class CropController {
   }
 
   @GetMapping("{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+  @Secured({"ADMIN", "MANAGER"})
   @ResponseStatus(HttpStatus.OK)
   public Crop getCrop(@PathVariable Long id) {
     return service.getCrop(id);
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+  @Secured({"ADMIN", "MANAGER"})
   @ResponseStatus(HttpStatus.OK)
   public List<Crop> getCrops() {
     return service.getCrops();

@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +28,7 @@ public class FarmController {
   private FarmService service;
   
   @GetMapping("/up")
+  @Secured("USER")
   @ResponseStatus(HttpStatus.OK)
   public void up() {
     service.up();
@@ -60,6 +63,8 @@ public class FarmController {
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
+  @Secured({"ADMIN", "MANAGER", "USER"})
   public ResponseEntity<List<Farm>> getFarms() {
     return ResponseEntity.status(HttpStatus.OK).body(service.getFarms());
   }

@@ -29,7 +29,7 @@ public class JwtService {
   public String generateToken(UserDetails user) {
     Algorithm algorithm = Algorithm.HMAC256(secret);
     return JWT.create()
-        .withIssuer("trybetrack")
+        .withIssuer("agrixapp")
         .withSubject(user.getUsername())
         .withExpiresAt(generateExpirationDate())
         .sign(algorithm);
@@ -39,5 +39,22 @@ public class JwtService {
     return LocalDateTime.now()
         .plusHours(2)
         .toInstant(ZoneOffset.of("-03:00"));
+  }
+
+  /**
+   * validate token.
+   *
+   * @param token
+   * 
+   * @return
+   * 
+   */
+  public String validateToken(String token) {
+    Algorithm algorithm = Algorithm.HMAC256(secret);
+    return JWT.require(algorithm)
+        .withIssuer("agrixapp")
+        .build()
+        .verify(token)
+        .getSubject();
   }
 }
