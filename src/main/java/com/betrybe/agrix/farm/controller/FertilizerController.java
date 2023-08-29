@@ -5,7 +5,6 @@ import com.betrybe.agrix.farm.service.FertilizerService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,14 +32,14 @@ public class FertilizerController {
   }
 
   @GetMapping
-  @ResponseStatus(HttpStatus.OK)
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @Secured("ADMIN")
+  @ResponseStatus(HttpStatus.OK)
   public List<Fertilizer> getFertilizers() {
     return service.getFertilizers();
   }
   
   @GetMapping("{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')") 
   @ResponseStatus(HttpStatus.OK)
   public Fertilizer getFertilizerById(@PathVariable Long id) {
     return service.getFertilizerById(id);

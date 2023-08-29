@@ -28,7 +28,7 @@ public class FarmController {
   private FarmService service;
   
   @GetMapping("/up")
-  @Secured("USER")
+  @Secured("ADMIN")
   @ResponseStatus(HttpStatus.OK)
   public void up() {
     service.up();
@@ -47,6 +47,7 @@ public class FarmController {
 
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
   public ResponseEntity<Farm> getFarm(@PathVariable Long id) {
     return ResponseEntity.status(HttpStatus.OK).body(service.getFarm(id));
   }
@@ -64,7 +65,6 @@ public class FarmController {
 
   @GetMapping
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
-  @Secured({"ADMIN", "MANAGER", "USER"})
   public ResponseEntity<List<Farm>> getFarms() {
     return ResponseEntity.status(HttpStatus.OK).body(service.getFarms());
   }
